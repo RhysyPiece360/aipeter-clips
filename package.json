@@ -1,0 +1,20 @@
+{
+  "name": "aipeter-clips",
+  "version": "1.0.0",
+  "description": "ai_peter clips",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@gitlab.com/ryanknutson/aipeter-clips.git"
+  },
+  "author": "Ryan D. Knutson",
+  "license": "GPL-2.0",
+  "bugs": {
+    "url": "https://gitlab.com/ryanknutson/aipeter-clips/issues"
+  },
+  "homepage": "https://gitlab.com/ryanknutson/aipeter-clips#readme"
+}
