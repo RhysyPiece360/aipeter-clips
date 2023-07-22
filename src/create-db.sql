@@ -20,7 +20,7 @@ CREATE TABLE users (
 
 CREATE TABLE comments (
   commentid SERIAL PRIMARY KEY,
-  commenttext TEXT NOT NULL,
+  text TEXT NOT NULL,
   userid SMALLINT NOT NULL,
   posted TIMESTAMP NOT NULL DEFAULT NOW(),
   likes SMALLINT DEFAULT 0
