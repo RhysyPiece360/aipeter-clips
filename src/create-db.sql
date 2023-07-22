@@ -2,25 +2,26 @@
 
 CREATE TABLE videos (
   videoid SMALLSERIAL PRIMARY KEY,
-  title VARCHAR(255),
-  filename VARCHAR(255) UNIQUE,
+  channel VARCHAR(255) NOT NULL,
+  title VARCHAR(255) NOT NULL,
+  filename VARCHAR(255) UNIQUE NOT NULL,
   uploaded TIMESTAMP NOT NULL DEFAULT NOW(),
-  userid SMALLINT,
-  likes SMALLINT 
+  userid SMALLINT NOT NULL,
+  likes SMALLINT DEFAULT 0 
 )
   
 CREATE TABLE users (
   userid SMALLSERIAL PRIMARY KEY,
   username VARCHAR(20) UNIQUE,
-  email VARCHAR(255),
-  pw BINARY(60),
+  email VARCHAR(254) UNIQUE NOT NULL,
+  pw BINARY(60) NOT NULL,
   bio TEXT
 );
 
 CREATE TABLE comments (
   commentid SERIAL PRIMARY KEY,
-  userid SMALLINT,
-  data TEXT,
-  likes SMALLINT,
-  posted TIMESTAMP NOT NULL DEFAULT NOW()
+  commenttext TEXT NOT NULL,
+  userid SMALLINT NOT NULL,
+  posted TIMESTAMP NOT NULL DEFAULT NOW(),
+  likes SMALLINT DEFAULT 0
 ); 
