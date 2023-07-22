@@ -1,27 +1,37 @@
 --- PostgreSQL
 
 CREATE TABLE videos (
-  videoid SMALLSERIAL PRIMARY KEY,
+  videoid SERIAL PRIMARY KEY,
   channel VARCHAR(255) NOT NULL,
   title VARCHAR(255) NOT NULL,
   filename VARCHAR(255) UNIQUE NOT NULL,
-  uploaded TIMESTAMP NOT NULL DEFAULT NOW(),
-  userid SMALLINT NOT NULL,
-  likes SMALLINT DEFAULT 0 
+  uploaded TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  userid INT NOT NULL
+)
+
+CREATE TABLE videolikes (
+  videoid INT NOT NULL,
+  userid INT DEFAULT NULL
 )
   
 CREATE TABLE users (
-  userid SMALLSERIAL PRIMARY KEY,
+  userid SERIAL PRIMARY KEY,
   username VARCHAR(20) UNIQUE,
   email VARCHAR(254) UNIQUE NOT NULL,
   pw BINARY(60) NOT NULL,
+  created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   bio TEXT
 );
 
 CREATE TABLE comments (
   commentid SERIAL PRIMARY KEY,
+  videoid INT NOT NULL,
   text TEXT NOT NULL,
-  userid SMALLINT NOT NULL,
-  posted TIMESTAMP NOT NULL DEFAULT NOW(),
-  likes SMALLINT DEFAULT 0
+  userid INT NOT NULL,
+  posted TIMESTAMPTZ NOT NULL DEFAULT NOW()
 ); 
+
+CREATE TABLE commentlikes (
+  commentid INT NOT NULL,
+  userid SMALLINT DEFAULT NULL
+)

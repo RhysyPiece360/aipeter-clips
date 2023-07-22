@@ -32,27 +32,10 @@ block main
         +showcard("Family Guy")
         +showcard("Dragon Ball")
 
-      /// ideas for showing all shows at top
-      /// this is kinda redundant though as they're in the menu
-      /// maybe only show on mobile?
-      // p
-      //   img(src='http://placekitten.com/128/128')
-      //   img(src='http://placekitten.com/128/128')
-      // p
-      //   a.btn.btn-primary(href='#') AI Peter
-      //   a.btn.btn-primary(href='#') AI Dragon Ball
-
-  // .container
-  //   .row
-  //     .col-6
-  //       img.w100.img-fluid(src='http://placekitten.com/256/256')
-  //       p ai peter
-  //     .col-6
-  //       img.w100.img-fluid(src='http://placekitten.com/256/256')
-  //       p ai dragon ball
-
-  .album.py-5.bg-light
+  .album.py-5
     .container
+      .row
+        h2 Recently Uploaded
       .row
         // each val in [1, 2, 3, 4, 5, 6]
         each val in [...Array(6).keys()]
