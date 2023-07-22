@@ -1,11 +1,29 @@
 const path = require('node:path')
 
+const SITEURL = new URL('http://10.0.0.187:3420')
+
 // set express stuffs tbh
 const express = require('express')
 const app = express()
 const port = 3420
 app.set('view engine', 'pug')
 app.use('/public', express.static(path.join(__dirname, 'public')))
+
+// .env config
+require('dotenv').config()
+console.log(process.env)
+
+const { Pool } = require('pg')
+const pool = new Pool({
+  user: process.env.PGUSER,
+  host: process.env.PGHOST,
+  database: process.env.PGDATABASE,
+  password: process.env.PGPASSWORD,
+  port: process.env.PGPORT,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 2000,
+})
 
 let sqlDriver = {
   postLimit: 10,
@@ -34,10 +52,17 @@ let sqlDriver = {
 }
 
 
-app.get('/', (req, res) => {
-  console.log(sqlDriver.userPage('bingus123'))
-  console.log(sqlDriver.userPage('123'))
-  res.render('index', { title: 'wabangus tbh' })
+app.get('/', async (req, res) => {
+  try {
+    const sqlRes = await pool.query(sqlDriver.homepagePosts())
+    console.log(sqlRes.rows)
+    res.render('index', {
+      title: 'wabangus tbh',
+      posts: sqlRes.rows
+    })
+  } catch (err) {
+    console.error(err)
+  }
 })
 
 // launch the server
