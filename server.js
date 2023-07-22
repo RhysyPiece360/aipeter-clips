@@ -30,8 +30,9 @@ let sqlDriver = {
   homepagePostLimit: 6,
   homepagePosts: function() {
     console.log('this will get homepage posts')
-    return `SELECT *
+    return `SELECT videos.*, users.username
     FROM videos
+    JOIN users ON videos.userid = users.userid
     ORDER BY uploaded DESC
     LIMIT ${this.homepagePostLimit};`
   },
@@ -58,7 +59,7 @@ app.get('/', async (req, res) => {
     console.log(sqlRes.rows)
     res.render('index', {
       title: 'wabangus tbh',
-      posts: sqlRes.rows
+      featuredPosts: sqlRes.rows
     })
   } catch (err) {
     console.error(err)

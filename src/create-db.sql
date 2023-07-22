@@ -14,6 +14,7 @@ CREATE TABLE videos (
   videoid SERIAL PRIMARY KEY,
   channel VARCHAR(255) NOT NULL,
   title VARCHAR(255) NOT NULL,
+  ---description VARCHAR(64),
   filename VARCHAR(255) UNIQUE NOT NULL,
   uploaded TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   userid INT NOT NULL REFERENCES users (userid),
