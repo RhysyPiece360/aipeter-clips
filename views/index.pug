@@ -13,15 +13,44 @@ mixin cell
             button.btn.btn-sm.btn-outline-secondary(type='button') Edit
           small.text-muted 9 mins
 
+mixin showcard(name)
+  .col-6
+    .card.mb-4.box-shadow
+      img.card-img-top(src='http://placekitten.com/128/128')
+      .card-body
+        .btn-group
+          button.btn.btn-sm.btn-outline-secondary(type='button')= name
+
 block main
   section.jumbotron.text-center
     .container
-      h1.jumbotron-heading Album example
+      h1.jumbotron-heading AI Shows Clips
       p.lead.text-muted
         | Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.
-      p
-        a.btn.btn-primary.my-2(href='#') Main call to action
-        a.btn.btn-secondary.my-2(href='#') Secondary action
+    .container.d-sm-none
+      .row
+        +showcard("Family Guy")
+        +showcard("Dragon Ball")
+
+      /// ideas for showing all shows at top
+      /// this is kinda redundant though as they're in the menu
+      /// maybe only show on mobile?
+      // p
+      //   img(src='http://placekitten.com/128/128')
+      //   img(src='http://placekitten.com/128/128')
+      // p
+      //   a.btn.btn-primary(href='#') AI Peter
+      //   a.btn.btn-primary(href='#') AI Dragon Ball
+
+  // .container
+  //   .row
+  //     .col-6
+  //       img.w100.img-fluid(src='http://placekitten.com/256/256')
+  //       p ai peter
+  //     .col-6
+  //       img.w100.img-fluid(src='http://placekitten.com/256/256')
+  //       p ai dragon ball
+
   .album.py-5.bg-light
     .container
       .row
