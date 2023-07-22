@@ -9,6 +9,10 @@ const port = 3420
 app.set('view engine', 'pug')
 app.use('/public', express.static(path.join(__dirname, 'public')))
 
+// where to store videos + video endpoint
+const VIDEOSDIR = path.resolve('./videos/')
+app.use('/api/video', express.static(VIDEOSDIR))
+
 // .env config
 require('dotenv').config()
 console.log(process.env)
@@ -25,7 +29,7 @@ const pool = new Pool({
   connectionTimeoutMillis: 2000,
 })
 
-let sqlDriver = {
+const sqlDriver = {
   postLimit: 10,
   homepagePostLimit: 6,
   homepagePosts: function() {
@@ -36,8 +40,8 @@ let sqlDriver = {
     ORDER BY uploaded DESC
     LIMIT ${this.homepagePostLimit};`
   },
-  // user pages, accepts both username and userid (for permalink)
-  userPage: function(userid) {
+  // user pages, accepts userid
+  userPageID: function(userid) {
     console.log('this will get the info needed for user page')
     return `PREPARE userPage (int) AS
     SELECT userid, username, discordusername, created, bio
@@ -65,6 +69,7 @@ app.get('/', async (req, res) => {
     console.error(err)
   }
 })
+
 
 // launch the server
 app.listen(port, () => console.log(`ai_peter clips server listening on port ${port}`))
