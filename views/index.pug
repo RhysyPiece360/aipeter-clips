@@ -1,4 +1,30 @@
 extends _layout.pug
+ 
+mixin cell
+  .col-md-4
+    .card.mb-4.box-shadow
+      img.card-img-top(src='http://placekitten.com/1366/768')
+      .card-body
+        p.card-text
+          | This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.
+        .d-flex.justify-content-between.align-items-center
+          .btn-group
+            button.btn.btn-sm.btn-outline-secondary(type='button') View
+            button.btn.btn-sm.btn-outline-secondary(type='button') Edit
+          small.text-muted 9 mins
 
 block main
-  p my balls hurt ow
+  section.jumbotron.text-center
+    .container
+      h1.jumbotron-heading Album example
+      p.lead.text-muted
+        | Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.
+      p
+        a.btn.btn-primary.my-2(href='#') Main call to action
+        a.btn.btn-secondary.my-2(href='#') Secondary action
+  .album.py-5.bg-light
+    .container
+      .row
+        // each val in [1, 2, 3, 4, 5, 6]
+        each val in [...Array(6).keys()]
+          +cell
