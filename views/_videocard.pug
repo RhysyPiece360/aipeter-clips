@@ -3,6 +3,12 @@ mixin modalBtn(post)
   button.btn.btn-primary(type='button' data-bs-toggle='modal' data-bs-target=`#videoModal-${post.videoid}`)
     i.bi.bi-link-45deg
 
+mixin likes(post)
+  // Button trigger modal
+  button.btn.btn-primary.btn-sm(type='button' data-bs-toggle='modal' data-bs-target=`#videoModal-${post.videoid}`)
+    // | 154
+    i.bi.bi-heart
+
 mixin modalBody(post)
   // Modal
   .modal.modal-lg.fade(id=`videoModal-${post.videoid}` tabindex='-1' role='dialog' aria-labelledby=`videoModalLabel-${post.videoid}` aria-hidden='true')
@@ -49,6 +55,12 @@ mixin videoCard(post)
       position: absolute;
       transform: translate(-50%, -50%);
     }
+    .likeCount {
+      text-align: right;
+    }
+    .likeHeart {
+      padding: 0;
+    }
   .col-md-4.featuredPost
     .card.mb-4.box-shadow
       // img.playbtn(src='/public/img/play-button-28259.png')
@@ -61,14 +73,25 @@ mixin videoCard(post)
         a.card-text(data-bs-toggle='modal' data-bs-target=`#videoModal-${post.videoid}` style='text-decoration: none; color: black;')
           h5.card-text= post.title
         .d-flex.justify-content-between.align-items-center(style='margin-top: 5px')
-          .btn-group
-            // TODO add channel links
-            // TODO different colors for different shows
-            a.btn.btn-sm.btn-outline-secondary.showBtn(type='button', href=`#`)= post.show
-            a.btn.btn-sm.btn-outline-secondary.usernameBtn(type='button', href=`/u/${post.userid}`)= post.username 
-            +modalBtn(post)
-            +modalBody(post)
+          +modalBody(post)
+          // .btn-group
+          //   // TODO add channel links
+          //   // TODO different colors for different shows
+          //   a.btn.btn-sm.btn-outline-secondary.showBtn(type='button', href=`#`)= post.show
+          //   a.btn.btn-sm.btn-outline-secondary.usernameBtn(type='button', href=`/u/${post.userid}`)= post.username 
+          //   // +modalBtn(post)
+        // .container(style='margin-top: 5px')
+        .row
+          .col-3
+            a.btn.btn-sm.btn-outline-secondary.showBtn.w-100(type='button', href=`#`)= post.show
+          .col-6
+            p hi
+          .col-2.likeCount
+            p= post.likes
+          .col-1.likeHeart
+            button.btn.btn-outline-danger.btn-sm(type='button' data-bs-toggle='modal' data-bs-target=`#videoModal-${post.videoid}`)
+              i.bi.bi-heart
   
           // small.text-muted= `${post.likes} likes`
           // TODO figure out how to make this interactive
-          i.bi.bi-heart= ` ${post.likes}`
+          // i.bi.bi-heart= ` ${post.likes}`
