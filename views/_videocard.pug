@@ -15,7 +15,10 @@ mixin modalBody(post)
               | Your browser does not support the video tag.
           // | ...
         .modal-footer
-          button.btn.btn-secondary.mr-auto(type='button')= post.fullshowname
+          //- handle homepage
+          if (post.fullshowname)
+            a.btn.btn-secondary.mr-auto(type='button' href=`/show/${post.show.toLowerCase()}`)= post.fullshowname
+              // button.btn.btn-secondary.mr-auto(type='button')= post.fullshowname
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           // button.btn.btn-primary(type='button') Save changes
 
@@ -86,5 +89,5 @@ mixin videoCard(post)
             p= post.likes
           // TODO figure out how to make this interactive
           .col-1.likeHeart
-            button.btn.btn-outline-danger.btn-sm(type='button' data-bs-toggle='modal' data-bs-target=`#videoModal-${post.videoid}`)
+            button.btn.btn-outline-danger.btn-sm(type='button')
               i.bi.bi-heart

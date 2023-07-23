@@ -7,7 +7,8 @@ CREATE TABLE users (
   pw CHAR(60) NOT NULL,
   created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   discordusername VARCHAR(37),
-  bio TEXT
+  bio TEXT,
+  profilepic VARCHAR(32)
 );
 
 CREATE TABLE videos (
@@ -46,6 +47,8 @@ BEGIN
   RETURN CASE 
     WHEN shortname = 'PETER' THEN 'AI Peter'
     WHEN shortname = 'DBZ' THEN 'AI Dragon Ball'
+    WHEN shortname = 'SPONGE' THEN 'AI Sponge'
+    WHEN shortname = 'BRBA' THEN 'AI Breaking Bad'
     ELSE NULL
   END;
 END;

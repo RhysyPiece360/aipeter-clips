@@ -1,5 +1,6 @@
 [] have a random page that gets a bunch of random posts (TABLESAMPLE)
 [] input validation on video file names
-[] stop video playback on quit out of modal
-[] only allow certain characters in filename
+[] only allow certain characters in filename (,),a-z,A-Z,0-9,!,.
 [] random page, to grab random clips (filter by show???)
+[] view counter
+[] link to video

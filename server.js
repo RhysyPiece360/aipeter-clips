@@ -33,7 +33,6 @@ const sqlDriver = {
   postLimit: 10,
   homepagePostLimit: 6,
   homepagePosts: function() {
-    console.log('this will get homepage posts')
     return `SELECT videos.*, users.username,
     formatTimestamp(videos.uploaded) AS fancyuploaded,
     fullShowName(videos.show)
@@ -42,20 +41,40 @@ const sqlDriver = {
     ORDER BY uploaded DESC
     LIMIT ${this.homepagePostLimit};`
   },
-  // user pages, accepts userid
-  userPageID: function(userid) {
-    console.log('this will get the info needed for user page')
-    return `PREPARE userPage (int) AS
-    SELECT userid, username, discordusername, bio,
-    formatTimestamp(users.created) AS created
-    FROM users
-    WHERE userid = $1;
-    EXECUTE userPage(${userid});`
+  aiShowPosts: function(show) {
+    // TODO pagination
+    const text = `SELECT videos.*, users.username,
+    formatTimestamp(videos.uploaded) AS fancyuploaded
+    FROM videos
+    JOIN users ON videos.userid = users.userid
+    WHERE videos.show = $1
+    ORDER BY uploaded DESC;`
+    const values = [show.toUpperCase()]
+    return {text, values}
   },
-  aiShowPage: function(show) {
-    console.log('this will get videos for `show`')
-    
+  userInfo: function(userid) {
+    const text = `SELECT username, created, discordusername, bio, profilepic
+    FROM users
+    WHERE userid = $1;`
+    const values = [+userid]
+    return {text, values}
+  },
+  likeVideo: function(videoid) {
+    const text = `UPDATE videos
+    SET likes = likes + 1
+    WHERE videoid = $1;`
+    const values = [videoid]
+    return {text, values}
+  }
+}
 
+const fullShowName = shortname => {
+  switch (shortname.toUpperCase()) {
+    case 'PETER': return 'AI Peter'
+    case 'DBZ': return 'AI Dragon Ball'
+    case 'SPONGE': return 'AI Sponge'
+    case 'BRBA': return 'AI Breaking Bad'
+    default: return null
   }
 }
 
@@ -63,10 +82,8 @@ const sqlDriver = {
 app.get('/', async (_req, res) => {
   try {
     const sqlRes = await pool.query(sqlDriver.homepagePosts())
-    console.log(sqlRes.rows)
 
     res.render('index', {
-      title: 'wabangus tbh',
       featuredPosts: sqlRes.rows
     })
   } catch (err) {
@@ -75,6 +92,74 @@ app.get('/', async (_req, res) => {
   }
 })
 
+// user pages
+app.get('/u/:userid', async (req, res) => {
+  try {
+    // query db for clips
+    const statement = sqlDriver.userInfo(req.params.userid)
+    const sqlRes = await pool.query(statement.text, statement.values)
+    console.log(sqlRes.rows)
+
+    // TODO make sure userid is int
+    if (sqlRes.rows.length == 0) throw new Error('no profile with this id!')
+    
+    // console.log(sqlRes[1].rows)
+
+    // res.render('user', {
+    //   showname: fullShowName(req.params.show),
+    //   posts: sqlRes.rows
+    // })
+    res.send(sqlRes.rows[0]).status(200)
+  } catch (err) {
+    // TODO better error handling
+    console.log(err)
+    res.status(404).send(err.message)
+  }
+})
+
+// show pages
+app.get('/show/:show', async (req, res) => {
+  try {
+    // query db for clips
+    const statement = sqlDriver.aiShowPosts(req.params.show)
+    const sqlRes = await pool.query(statement.text, statement.values)
+    console.log(sqlRes.rows)
+
+    // console.log(sqlRes[1].rows)
+
+    res.render('showPage', {
+      showname: fullShowName(req.params.show),
+      posts: sqlRes.rows
+    })
+  } catch (err) {
+    // TODO error handling
+    console.error(err)
+  }
+})
+
+// TODO rate limit, add unlike
+app.put('/api/video/like/:videoid', async (req, res) => {
+  console.log('AAAAAAAAAAAa')
+  try {
+    console.log(req.params.videoid)
+
+    // check that videoid is an int
+    if (isNaN(+req.params.videoid)) throw new Error('video id must be an integer!')
+
+    const statement = sqlDriver.likeVideo(req.params.videoid)
+    const sqlRes = await pool.query(statement.text, statement.values)
+
+    if (sqlRes.rowCount != 1) throw new Error('update unsuccessful, is id correct?')
+
+    console.log(sqlRes)
+
+    res.sendStatus(200)
+  } catch (err) {
+    // TODO better error handling
+    console.log(err)
+    res.status(400).send(err.message)
+  }
+})
 
 // start the server
 app.listen(port, () => console.log(`ai_peter clips server listening on port ${port}`))
