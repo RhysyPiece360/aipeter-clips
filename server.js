@@ -57,19 +57,34 @@ const sqlDriver = {
 }
 
 
+// fancy formatting for show names
+const fancyFmtShowName = showName => {
+  switch (showName) {
+    case 'PETER': return 'AI Peter';
+    case 'DBZ': return 'AI Dragon Ball';
+  }
+}
+
+// homepage
 app.get('/', async (req, res) => {
   try {
     const sqlRes = await pool.query(sqlDriver.homepagePosts())
     console.log(sqlRes.rows)
+
+    for (post of sqlRes.rows) {
+      post.fancyShowName = fancyFmtShowName(post.show);
+    }
+
     res.render('index', {
       title: 'wabangus tbh',
       featuredPosts: sqlRes.rows
     })
   } catch (err) {
+    // TODO error handling
     console.error(err)
   }
 })
 
 
-// launch the server
+// start the server
 app.listen(port, () => console.log(`ai_peter clips server listening on port ${port}`))

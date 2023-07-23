@@ -1,2 +1,4 @@
 [] have a random page that gets a bunch of random posts (TABLESAMPLE)
 [] input validation on video file names
+[] stop video playback on quit out of modal
+[] only allow certain characters in filename

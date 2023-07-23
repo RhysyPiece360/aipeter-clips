@@ -1,4 +1,6 @@
 extends _layout.pug
+
+include _modal.pug
  
 mixin cell
   .col-md-4
@@ -13,28 +15,6 @@ mixin cell
             button#copyButton.btn.btn-sm.btn-outline-secondary(type='button') Edit
           small.text-muted 9 mins
 
-mixin modalBtn(post)
-  // Button trigger modal
-  button.btn.btn-primary(type='button' data-bs-toggle='modal' data-bs-target=`#videoModal-${post.videoid}`)
-    i.bi.bi-link-45deg
-    // | Launch demo modal
-
-mixin modalBody(post)
-  // Modal
-  .modal.fade(id=`videoModal-${post.videoid}` tabindex='-1' role='dialog' aria-labelledby=`videoModalLabel-${post.videoid}` aria-hidden='true')
-    .modal-dialog(role='document')
-      .modal-content
-        .modal-header
-          h5.modal-title(id=`videoModalLabel-${post.videoid}`)= post.title 
-          button.close(type='button' data-bs-dismiss='modal' aria-label='Close')
-            span(aria-hidden='true') ×
-        .modal-body
-          | ...
-        .modal-footer
-          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
-          // button.btn.btn-primary(type='button') Save changes
-
-
 mixin showcard(name)
   .col-6
     .card.mb-4.box-shadow
@@ -44,14 +24,6 @@ mixin showcard(name)
           button.btn.btn-sm.btn-outline-secondary(type='button')= name
 
 block main
-  .container
-    // +modalBtn
-    // +modalBody
-  .container
-    each post in featuredPosts
-      each val, index in post
-        li= index + ': ' + val
-      hr
 
   section.jumbotron.text-center
     .container
@@ -70,14 +42,10 @@ block main
         h2 Recently Uploaded
       .row
         each post in featuredPosts
+          // video cell
           .col-md-4.featuredPost
             .card.mb-4.box-shadow
               img.card-img-top(src='http://placekitten.com/1366/768')
-              // .embed-responsive.card-img-top
-              //   video.embed-responsive-item(controls='controls' type='video/mp4' preload='none' width:'100%')
-              //     source(src=`/api/video/${post.filename}` autostart='false')
-              //     | Your browser does not support the video tag.
-
               .card-body
                 h5.card-text= post.title
                 .d-flex.justify-content-between.align-items-center
@@ -92,3 +60,9 @@ block main
                   // small.text-muted= `${post.likes} likes`
                   // TODO figure out how to make this interactive
                   i.bi.bi-heart= ` ${post.likes}`
+
+  .container
+    each post in featuredPosts
+      each val, index in post
+        li= index + ': ' + val
+      hr
