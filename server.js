@@ -65,14 +65,29 @@ const fancyFmtShowName = showName => {
   }
 }
 
+let fancyFormatDate = date => {
+  let rawDate = new Date(date)
+  const options = {
+    year: 'numeric',
+    month: 'short',
+    day: '2-digit',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true,
+  }
+
+  return new Intl.DateTimeFormat('en-US', options).format(rawDate).replace(',', '')
+}
+
 // homepage
-app.get('/', async (req, res) => {
+app.get('/', async (_req, res) => {
   try {
     const sqlRes = await pool.query(sqlDriver.homepagePosts())
     console.log(sqlRes.rows)
 
     for (post of sqlRes.rows) {
       post.fancyShowName = fancyFmtShowName(post.show);
+      post.fancyUploaded = fancyFormatDate(post.uploaded);
     }
 
     res.render('index', {
