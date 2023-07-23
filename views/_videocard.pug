@@ -1,0 +1,73 @@
+mixin modalBtn(post)
+  // Button trigger modal
+  button.btn.btn-primary(type='button' data-bs-toggle='modal' data-bs-target=`#videoModal-${post.videoid}`)
+    i.bi.bi-link-45deg
+
+mixin modalBody(post)
+  // Modal
+  .modal.modal-lg.fade(id=`videoModal-${post.videoid}` tabindex='-1' role='dialog' aria-labelledby=`videoModalLabel-${post.videoid}` aria-hidden='true')
+    .modal-dialog.modal-dialog-centered(role='document')
+      .modal-content
+        .modal-header
+          h5.modal-title(id=`videoModalLabel-${post.videoid}`)= post.title 
+          button.close(type='button' data-bs-dismiss='modal' aria-label='Close')
+            span(aria-hidden='true') ×
+        .modal-body
+          // video
+          .embed-responsive
+            video.embed-responsive-item.w-100(id=`video-${post.videoid}` controls='controls' type='video/mp4' preload='metadata')
+              source(src=`/api/video/${post.filename}` autostart='false')
+              | Your browser does not support the video tag.
+          // | ...
+        .modal-footer
+          button.btn.btn-secondary.mr-auto(type='button')= post.fancyShowName 
+          button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
+          // button.btn.btn-primary(type='button') Save changes
+
+        // pause video on modal close
+        - var scriptModalID = `#videoModal-${post.videoid}`
+        - var scriptVideoID = `video-${post.videoid}`
+        script.
+          $('#{scriptModalID}').on('hidden.bs.modal', function() {
+            document.getElementById("#{scriptVideoID}").pause()
+          })
+
+mixin videoCard(post)
+  style.
+    .playbtn {
+      width: 12%;
+    }
+    .video-thumbnail {
+      position: relative;
+    }
+
+    .video-thumbnail i {
+      font-size: 4em;
+      top: 50%;
+      left: 50%;
+      position: absolute;
+      transform: translate(-50%, -50%);
+    }
+  .col-md-4.featuredPost
+    .card.mb-4.box-shadow
+      // img.playbtn(src='/public/img/play-button-28259.png')
+      .video-thumbnail
+        a.card-text(data-bs-toggle='modal' data-bs-target=`#videoModal-${post.videoid}` style='text-decoration: none; color: black;')
+          i.bi.bi-play-circle
+          img.card-img-top(src='http://placekitten.com/1366/768')
+      .card-body
+        // h5.card-text= post.title
+        a.card-text(data-bs-toggle='modal' data-bs-target=`#videoModal-${post.videoid}` style='text-decoration: none; color: black;')
+          h5.card-text= post.title
+        .d-flex.justify-content-between.align-items-center(style='margin-top: 5px')
+          .btn-group
+            // TODO add channel links
+            // TODO different colors for different shows
+            a.btn.btn-sm.btn-outline-secondary.showBtn(type='button', href=`#`)= post.show
+            a.btn.btn-sm.btn-outline-secondary.usernameBtn(type='button', href=`/u/${post.userid}`)= post.username 
+            +modalBtn(post)
+            +modalBody(post)
+  
+          // small.text-muted= `${post.likes} likes`
+          // TODO figure out how to make this interactive
+          i.bi.bi-heart= ` ${post.likes}`

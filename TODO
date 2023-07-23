@@ -2,3 +2,4 @@
 [] input validation on video file names
 [] stop video playback on quit out of modal
 [] only allow certain characters in filename
+[] random page, to grab random clips (filter by show???)

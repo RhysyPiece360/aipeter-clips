@@ -1,6 +1,6 @@
 extends _layout.pug
 
-include _modal.pug
+include _videocard
  
 mixin cell
   .col-md-4
@@ -16,6 +16,7 @@ mixin cell
           small.text-muted 9 mins
 
 mixin showcard(name)
+  // show card to list all shows (mobile only)
   .col-6
     .card.mb-4.box-shadow
       img.card-img-top(src='http://placekitten.com/128/128')
@@ -29,8 +30,8 @@ block main
     .container
       h1.jumbotron-heading AI Shows Clips
       p.lead.text-muted
-        | Something short and leading about the collection below—its contents, the creator, etc. Make it short and sweet, but not too short so folks don't simply skip over it entirely.
-    // showcards for mobile only
+        | owwww oooof my bones they really hurt 😢😢😢
+    // showcards (mobile only)
     .container.d-sm-none
       .row
         +showcard("Family Guy")
@@ -39,27 +40,11 @@ block main
   .album.py-5
     .container
       .row
-        h2 Recently Uploaded
+        // h2 Recently Uploaded
+        h2 Recent Uploads
       .row
         each post in featuredPosts
-          // video cell
-          .col-md-4.featuredPost
-            .card.mb-4.box-shadow
-              img.card-img-top(src='http://placekitten.com/1366/768')
-              .card-body
-                h5.card-text= post.title
-                .d-flex.justify-content-between.align-items-center
-                  .btn-group
-                    // TODO add channel links
-                    // TODO different colors for different shows
-                    a.btn.btn-sm.btn-outline-secondary.showBtn(type='button', href=`#`)= post.show
-                    a.btn.btn-sm.btn-outline-secondary.usernameBtn(type='button', href=`/u/${post.userid}`)= post.username 
-                    +modalBtn(post)
-                    +modalBody(post)
-
-                  // small.text-muted= `${post.likes} likes`
-                  // TODO figure out how to make this interactive
-                  i.bi.bi-heart= ` ${post.likes}`
+          +videoCard(post)
 
   .container
     each post in featuredPosts
