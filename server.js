@@ -34,7 +34,9 @@ const sqlDriver = {
   homepagePostLimit: 6,
   homepagePosts: function() {
     console.log('this will get homepage posts')
-    return `SELECT videos.*, users.username
+    return `SELECT videos.*, users.username,
+    formatTimestamp(videos.uploaded) AS fancyuploaded,
+    fullShowName(videos.show)
     FROM videos
     JOIN users ON videos.userid = users.userid
     ORDER BY uploaded DESC
@@ -44,7 +46,8 @@ const sqlDriver = {
   userPageID: function(userid) {
     console.log('this will get the info needed for user page')
     return `PREPARE userPage (int) AS
-    SELECT userid, username, discordusername, created, bio
+    SELECT userid, username, discordusername, bio,
+    formatTimestamp(users.created) AS created
     FROM users
     WHERE userid = $1;
     EXECUTE userPage(${userid});`
@@ -56,39 +59,11 @@ const sqlDriver = {
   }
 }
 
-
-// fancy formatting for show names
-const fancyFmtShowName = showName => {
-  switch (showName) {
-    case 'PETER': return 'AI Peter';
-    case 'DBZ': return 'AI Dragon Ball';
-  }
-}
-
-let fancyFormatDate = date => {
-  let rawDate = new Date(date)
-  const options = {
-    year: 'numeric',
-    month: 'short',
-    day: '2-digit',
-    hour: 'numeric',
-    minute: 'numeric',
-    hour12: true,
-  }
-
-  return new Intl.DateTimeFormat('en-US', options).format(rawDate).replace(',', '')
-}
-
 // homepage
 app.get('/', async (_req, res) => {
   try {
     const sqlRes = await pool.query(sqlDriver.homepagePosts())
     console.log(sqlRes.rows)
-
-    for (post of sqlRes.rows) {
-      post.fancyShowName = fancyFmtShowName(post.show);
-      post.fancyUploaded = fancyFormatDate(post.uploaded);
-    }
 
     res.render('index', {
       title: 'wabangus tbh',

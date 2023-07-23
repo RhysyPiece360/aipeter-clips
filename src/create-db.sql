@@ -30,6 +30,29 @@ CREATE TABLE comments (
   likes INT DEFAULT 0
 );
 
+CREATE OR REPLACE FUNCTION formatTimestamp(timestamp_column timestamptz)
+RETURNS TEXT AS
+$$
+BEGIN
+  RETURN TO_CHAR(timestamp_column, 'Mon DD YYYY HH:MIAM');
+END;
+$$
+LANGUAGE plpgsql;
+
+CREATE OR REPLACE FUNCTION fullShowName(shortname text)
+RETURNS text AS
+$$
+BEGIN
+  RETURN CASE 
+    WHEN shortname = 'PETER' THEN 'AI Peter'
+    WHEN shortname = 'DBZ' THEN 'AI Dragon Ball'
+    ELSE NULL
+  END;
+END;
+$$
+LANGUAGE plpgsql;
+
+
 /* CREATE TABLE videolikes ( */
 /*   videoid INT REFERENCES videos(videoid) NOT NULL, */
 /*   userid INT DEFAULT NULL */

@@ -15,7 +15,7 @@ mixin modalBody(post)
               | Your browser does not support the video tag.
           // | ...
         .modal-footer
-          button.btn.btn-secondary.mr-auto(type='button')= post.fancyShowName 
+          button.btn.btn-secondary.mr-auto(type='button')= post.fullshowname
           button.btn.btn-secondary(type='button' data-bs-dismiss='modal') Close
           // button.btn.btn-primary(type='button') Save changes
 
@@ -81,7 +81,7 @@ mixin videoCard(post)
             // TODO add channel links
             a.btn.btn-sm.btn-outline-secondary.showBtn.w-100(type='button', href=`/show/${post.show.toLowerCase()}`)= post.show
           .col-6
-            p hi
+            p= post.fancyuploaded
           .col-2.likeCount
             p= post.likes
           // TODO figure out how to make this interactive
