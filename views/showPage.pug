@@ -12,8 +12,8 @@ block main
   // jumbotron (top text)
   section.jumbotron.text-center
     .container
-      h1.jumbotron-heading= showPageData.fullname
-      p.lead.text-muted= showPageData.description
+      h1.jumbotron-heading= showData.fullname
+      p.lead.text-muted= showData.description
       //   | owwww oooof my bones they really hurt 😢😢😢
 
   .container
@@ -23,19 +23,25 @@ block main
         img.w-100(src='http://placekitten.com/1000/600')
       //- socials for show
       .col-5.socials
-        each social, key in socials
-          if (social)
-            // icons for stuff that doesn't have icons
-            - if (key == 'website') key = 'globe-americas'
-            - if (key == 'donationlink') key = 'cash-coin'
-            - if (key == 'otherlink') key = 'globe-americas'
-            // if (showPageData[linkType])
-            // p= social
-            // p= key
-            .row
-              .col-2
-                i.bi(class=`bi-${key}`)
-              .col-10= social
+        // each social, key in socials
+        //   if (social)
+        //     // icons for stuff that doesn't have icons
+        //     - if (key == 'website') key = 'globe-americas'
+        //     - if (key == 'donationlink') key = 'cash-coin'
+        //     - if (key == 'otherlink') key = 'globe-americas'
+        //     // if (showPageData[linkType])
+        //     // p= social
+        //     // p= key
+        //     .row
+        //       .col-2
+        //         i.bi(class=`bi-${key}`)
+        //       .col-10= social
+        each social in socialLinks
+          .row
+            .col-2
+              a(href=social.link style=`color: ${social.iconColor}`)
+                i.bi(class=`bi-${social.icon}`)
+            .col-10= social.socialName
 
   .album.py-5
     .container

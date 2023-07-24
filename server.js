@@ -171,25 +171,73 @@ app.get('/show/:show', async (req, res) => {
     
     const showData = showPageData.rows[0]
     
-    // grab socials out of showData and remove the keys from showData
-    const socials = {}
+
+    // return fancy name for link
+    const formatSocialName = name => {
+      switch (name) {
+        case 'discord': return 'Discord'
+        case 'youtube': return 'YouTube'
+        case 'twitch': return 'Twitch'
+
+        case 'donationlink': return 'Donate/Tip'
+        case 'website': return 'Homepage'
+        case 'otherlink': return showData.otherlinkname
+      }
+    }
+
+    // set icons for links
+    const socialIcons = name => {
+      switch (name) {
+        case 'discord': 
+        case 'youtube': 
+        case 'twitch':
+          return name
+
+        case 'donationlink':
+          return 'cash-coin'
+
+        case 'website': 
+        case 'otherlink': 
+          return 'globe'
+      }
+    }
+
+    // set icon color
+    const iconColor = name => {
+      switch (name) {
+        case 'discord': return '#7289DA'
+        case 'twitch': return '#6441A4'
+        case 'youtube': return 'red'
+        case 'donationlink': return 'green'
+        default: return 'black'
+      }
+    }
+
+    const socialLinks = [];
     let isSocial = false;
-    for (x in showData) {
-      if (x == "discord") isSocial = true;
-      else if (x == "otherlinktype") isSocial = false;
-      
+    
+    for (const key in showData) {
+      if (key === "discord") isSocial = true;
+      else if (key === "otherlinkname") isSocial = false;
+    
       if (isSocial) {
-        socials[x] = showData[x]
-        delete showData[x]
+        socialLinks.push({
+          socialName: formatSocialName(key),
+          socialType: [key],
+          icon: socialIcons(key),
+          iconColor: iconColor(key),
+          link: showData[key]
+        });
+        delete showData[key];
       }
     }
     
-    console.table(socials)
+    console.table(socialLinks)
     console.log(showData)
 
     res.render('showPage', {
-      showPageData: showPageData.rows[0],
-      socials,
+      showData,
+      socialLinks,
       posts: posts.rows,
       siteData: await siteData()
     })
