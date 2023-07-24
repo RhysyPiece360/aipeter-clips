@@ -8,6 +8,15 @@ block append style
       font-size: 3rem;
     }
  
+mixin socials
+  each social in socialLinks
+    if (social.link)
+      .row
+        .col-2
+          a(href=social.link style=`color: ${social.iconColor}`)
+            i.bi(class=`bi-${social.icon}`)
+        .col-10= social.name
+
 block main
   // jumbotron (top text)
   section.jumbotron.text-center
@@ -19,17 +28,20 @@ block main
   .container
     .row
       //- show banner
-      .col-7
+      .col-lg-7
         img.w-100(src='http://placekitten.com/1000/600')
-      //- socials for show
-      .col-5.socials
-        each social in socialLinks
-          if (social.link)
-            .row
-              .col-2
-                a(href=social.link style=`color: ${social.iconColor}`)
-                  i.bi(class=`bi-${social.icon}`)
-              .col-10= social.name
+      //- socials for desktop
+      .col-lg-5.d-none.d-lg-block.socials
+        +socials
+    // socials for mobile
+    // TODO style
+    .row.d-lg-none.text-center
+      p
+        button.btn.btn-primary(type='button' data-bs-toggle='collapse' data-bs-target='#linksCollapse' aria-expanded='false' aria-controls='linksCollapse')
+          | Links
+      #linksCollapse.collapse
+        .card.card-body
+          +socials
 
   .album.py-5
     .container
