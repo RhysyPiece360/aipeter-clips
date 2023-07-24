@@ -84,6 +84,7 @@ const sqlDriver = {
     ORDER BY uploaded DESC
     LIMIT ${this.homepagePostLimit};`
   },
+  // function for each ai tv show page
   aiShowPosts: function(show) {
     // TODO pagination
     const text = `SELECT videos.*, users.username,
@@ -95,29 +96,48 @@ const sqlDriver = {
     const values = [show.toUpperCase()]
     return {text, values}
   },
-  userInfo: function(userid) {
-    const text = `SELECT username, created, discordusername, bio, profilepic
+  userInfo: () => userid ({
+    text: `SELECT username, created, discordusername, bio, profilepic
     FROM users
-    WHERE userid = $1;`
-    const values = [+userid]
-    return {text, values}
-  },
+    WHERE userid = $1;`,
+    values: [+userid]
+  }),
+  getShows: () => `SELECT shortname, fullname, navname FROM shows;`,
+  getShowName: shortname => ({
+    text: `SELECT shortname, fullname, navname
+    FROM shows
+    WHERE shortname = '$1'`,
+    values: [shortname]
+  }),
+  // get the data for the show page including links
+  getShowPageData: shortname => ({
+    text: `SELECT * FROM shows WHERE shortname = $1`,
+    values: [shortname.toUpperCase()]
+  }),
+  // TODO update like function and remove this
   likeVideo: function(videoid) {
     const text = `UPDATE videos
     SET likes = likes + 1
     WHERE videoid = $1;`
     const values = [videoid]
     return {text, values}
-  },
-  getShowName: function(shortname) {
-    const text = `SELECT shortname, fullname, navname
-    FROM shows
-    WHERE shortname = $1`
-    const values = [shortname]
-    return {text, values}
   }
 }
 
+
+// site data passed to each page
+const siteData = async () => {
+  // get list of shows
+  // TODO cache this
+  const showList = await pool.query(sqlDriver.getShows())
+
+  return {
+    showList: showList.rows,
+    poweredBy: poweredBy()
+  }
+}
+
+// TODO remove this and just use sql
 const fullShowName = shortname => {
   switch (shortname.toUpperCase()) {
     case 'PETER': return 'AI Peter'
@@ -133,13 +153,45 @@ app.get('/', async (_req, res) => {
   try {
     const sqlRes = await pool.query(sqlDriver.homepagePosts())
 
+    let aaa = await siteData()
+
+    console.log(aaa)
+
     res.render('index', {
       featuredPosts: sqlRes.rows,
-      poweredBy: poweredBy()
+      siteData: await siteData()
     })
   } catch (err) {
     // TODO error handling
+    console.log('hi')
     console.error(err)
+  }
+})
+
+// show pages
+app.get('/show/:show', async (req, res) => {
+  try {
+    // query db for clips
+    let statement = sqlDriver.aiShowPosts(req.params.show)
+    const posts = await pool.query(statement.text, statement.values)
+
+    // get show info + links to stream, donation, etc.
+    statement = sqlDriver.getShowPageData(req.params.show)
+    const showPageData = await pool.query(statement.text, statement.values)
+
+    console.log(showPageData.rows)
+
+
+    res.render('showPage', {
+      showPageData: showPageData.rows[0],
+      posts: posts.rows,
+      siteData: await siteData()
+    })
+
+  } catch (err) {
+    // TODO error handling
+    console.error(err)
+    res.status(500).send(err.message)
   }
 })
 
@@ -157,36 +209,17 @@ app.get('/u/:userid', async (req, res) => {
 
     res.render('user', {
       user: sqlRes.rows[0],
-      poweredBy: poweredBy()
+      siteData: await siteData()
     })
     // res.send(sqlRes.rows[0]).status(200)
   } catch (err) {
-    // TODO better error handling
-    console.log(err)
-    res.status(404).send(err.message)
-  }
-})
-
-// show pages
-app.get('/show/:show', async (req, res) => {
-  try {
-    // query db for clips
-    const statement = sqlDriver.aiShowPosts(req.params.show)
-    const sqlRes = await pool.query(statement.text, statement.values)
-    console.log(sqlRes.rows)
-
-    // console.log(sqlRes[1].rows)
-
-    res.render('showPage', {
-      showname: fullShowName(req.params.show),
-      posts: sqlRes.rows,
-      poweredBy: poweredBy()
-    })
-  } catch (err) {
     // TODO error handling
-    console.error(err)
+    console.log(err)
+    res.status(500).send(err.message)
   }
 })
+
+
 
 // TODO rate limit, add unlike
 app.put('/api/video/like/:videoid', async (req, res) => {

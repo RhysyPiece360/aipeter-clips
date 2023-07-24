@@ -6,17 +6,19 @@ CREATE TABLE users (
   username VARCHAR(20) UNIQUE,
   role VARCHAR(63) DEFAULT NULL,
   email VARCHAR(254) UNIQUE NOT NULL,
+  --- don't need pw if using discord for auth
   pw CHAR(60) NOT NULL,
   created TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   lastlogin TIMESTAMPTZ DEFAULT NOW(),
   discordusername VARCHAR(37),
+  discordsnowflake BIGINT CHECK (discordsnowflake >= 0),
   bio TEXT,
   profilepic VARCHAR(32)
 );
 
 --- log user ips
 --- TODO fail silently on update
---- TODO run after login
+--- TODO log after user login
 CREATE TABLE user_ips (
   userid INT NOT NULL references users(userid),
   ip VARCHAR(45) NOT NULL,
@@ -28,6 +30,7 @@ CREATE TABLE shows (
   shortname VARCHAR(6) PRIMARY KEY NOT NULL,
   fullname VARCHAR(32) NOT NULL,
   navname VARCHAR(16) NOT NULL,
+  enabled BOOLEAN DEFAULT FALSE,
   discord VARCHAR(255),
   website VARCHAR(255),
   youtube VARCHAR(255),
@@ -69,8 +72,6 @@ CREATE TABLE videolikes (
 );
 
 
-  
-
 CREATE TABLE comments (
   commentid SERIAL PRIMARY KEY,
   videoid INT REFERENCES videos (videoid),
@@ -80,6 +81,20 @@ CREATE TABLE comments (
   likes INT DEFAULT 0
 );
 
+--- function to return the full show name from a short name (do we need this?)
+CREATE OR REPLACE FUNCTION fullShowName(input text)
+RETURNS text AS
+$$
+DECLARE
+  show_fullname text;
+BEGIN
+  -- Use SELECT query to retrieve the fullname from the 'shows' table based on the shortname
+  SELECT fullname INTO show_fullname FROM shows WHERE shortname = 'input';
+  
+  RETURN show_fullname; -- This will return the show_fullname found in the table, or NULL if not found
+END;
+$$
+LANGUAGE plpgsql;
 
 /* CREATE TABLE commentlikes ( */
 /*   commentid INT REFERENCES comments(commentid) NOT NULL, */
@@ -96,20 +111,7 @@ END;
 $$
 LANGUAGE plpgsql;
 
---- function to return the full show name from a short name (do we need this?)
-CREATE OR REPLACE FUNCTION fullShowName(shortname text)
-RETURNS text AS
-$$
-DECLARE
-  show_fullname text;
-BEGIN
-  -- Use SELECT query to retrieve the fullname from the 'shows' table based on the shortname
-  SELECT fullname INTO show_fullname FROM shows WHERE shortname = shortname;
-  
-  RETURN show_fullname; -- This will return the show_fullname found in the table, or NULL if not found
-END;
-$$
-LANGUAGE plpgsql;
+
 
 --- OLD function to return the full show name from a short name
 ---CREATE OR REPLACE FUNCTION fullShowName(shortname text)
@@ -128,16 +130,18 @@ LANGUAGE plpgsql;
 ---LANGUAGE plpgsql;
 
 --- view for staff
-CREATE VIEW staff AS
+CREATE OR REPLACE VIEW staff AS
 SELECT
   CASE role
     WHEN 'Owner' THEN 1
+    WHEN 'Developer' THEN 25
     WHEN 'Admin' THEN 50
     WHEN 'Moderator' THEN 100
   END AS rankval,
   role,
   username,
   discordusername,
+  discordsnowflake,
   userid
 FROM USERS
 WHERE role IS NOT NULL

@@ -6,14 +6,10 @@ nav.navbar.navbar-expand-sm.navbar-dark.bg-dark
     #navbarLinks.collapse.navbar-collapse
       // remove ms-auto to align left
       ul.navbar-nav.ms-auto
-        li.nav-item
-          a.nav-link(href='/show/peter') Family Guy
-        li.nav-item
-          a.nav-link(href='/show/dbz') Dragon Ball
-        li.nav-item
-          a.nav-link(href='/show/sponge') SpongeBob
-        li.nav-item
-          a.nav-link(href='/show/brba') Breaking Bad
+        //- list of shows
+        each show in siteData.showList
+          li.nav-item
+            a.nav-link(href=`/show/${show.shortname.toLowerCase()}`)= show.navname
         li.nav-item
           a.nav-link(href='/about') About
         li.nav-item
