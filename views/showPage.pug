@@ -1,0 +1,26 @@
+extends _layout.pug
+
+include _videocard
+ 
+block main
+  // jumbotron (top text)
+  section.jumbotron.text-center
+    .container
+      h1.jumbotron-heading= showname + ' Clips'
+      // p.lead.text-muted
+      //   | owwww oooof my bones they really hurt 😢😢😢
+
+  .album.py-5
+    .container
+      // .row
+      //   // h2 Recently Uploaded
+      //   h2 Recent Uploads
+      .row
+        each post in posts
+          +videoCard(post)
+
+  .container
+    each post in posts
+      each val, index in post
+        li= index + ': ' + val
+      hr

@@ -2,6 +2,8 @@ const path = require('node:path')
 
 const SITEURL = new URL('http://10.0.0.187:3420')
 
+const crypto = require('node:crypto')
+
 // set express stuffs tbh
 const express = require('express')
 const app = express()
@@ -16,6 +18,47 @@ app.use('/api/video', express.static(VIDEOSDIR))
 // .env config
 require('dotenv').config()
 console.log(process.env)
+
+const poweredBy = () => {
+  const list = [
+    'sex on tv',
+    'child slave labor',
+    'cum',
+    'your parent\'s failed marriage',
+    'SAMSUNG',
+    'a hamster on one of those spinny wheel things',
+    'Procrastination™',
+    'Walter White',
+    'Walter White\'s meth',
+    '\'*\'',
+    'hot babes in your area!',
+    'aliens',
+    'why do I exist juice',
+    'Owner\'s cat',
+    'erotic furry RP',
+    'the AIDS virus',
+    'spooky dark unknown forces of evil',
+    'Brawndo (it\'s got what plants crave)',
+    'PHP',
+    'the Planet Express crew',
+    'the children locked in my basement',
+    'the Brainfuck programming language',
+    'fondy',
+    'Segmentation fault (core dumped)',
+    'the Metaverse',
+    'MoistCr1TiKaL (aka Jesus)',
+    'my sentient artificial intelligence friend named Steve',
+    'bad code',
+    'goblins',
+    'LSD',
+    'The Tonight Show starring Jimmy Fallon',
+    'the CCP'
+  ]
+
+  return list[crypto.randomBytes(4).readUInt32BE() % list.length]
+}
+
+// TODO move this to seperate file and load on startup
 
 const { Pool } = require('pg')
 const pool = new Pool({
@@ -65,6 +108,13 @@ const sqlDriver = {
     WHERE videoid = $1;`
     const values = [videoid]
     return {text, values}
+  },
+  getShowName: function(shortname) {
+    const text = `SELECT shortname, fullname, navname
+    FROM shows
+    WHERE shortname = $1`
+    const values = [shortname]
+    return {text, values}
   }
 }
 
@@ -84,7 +134,8 @@ app.get('/', async (_req, res) => {
     const sqlRes = await pool.query(sqlDriver.homepagePosts())
 
     res.render('index', {
-      featuredPosts: sqlRes.rows
+      featuredPosts: sqlRes.rows,
+      poweredBy: poweredBy()
     })
   } catch (err) {
     // TODO error handling
@@ -103,13 +154,12 @@ app.get('/u/:userid', async (req, res) => {
     // TODO make sure userid is int
     if (sqlRes.rows.length == 0) throw new Error('no profile with this id!')
     
-    // console.log(sqlRes[1].rows)
 
-    // res.render('user', {
-    //   showname: fullShowName(req.params.show),
-    //   posts: sqlRes.rows
-    // })
-    res.send(sqlRes.rows[0]).status(200)
+    res.render('user', {
+      user: sqlRes.rows[0],
+      poweredBy: poweredBy()
+    })
+    // res.send(sqlRes.rows[0]).status(200)
   } catch (err) {
     // TODO better error handling
     console.log(err)
@@ -129,7 +179,8 @@ app.get('/show/:show', async (req, res) => {
 
     res.render('showPage', {
       showname: fullShowName(req.params.show),
-      posts: sqlRes.rows
+      posts: sqlRes.rows,
+      poweredBy: poweredBy()
     })
   } catch (err) {
     // TODO error handling
@@ -160,6 +211,7 @@ app.put('/api/video/like/:videoid', async (req, res) => {
     res.status(400).send(err.message)
   }
 })
+
 
 // start the server
 app.listen(port, () => console.log(`ai_peter clips server listening on port ${port}`))

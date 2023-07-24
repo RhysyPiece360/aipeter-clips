@@ -1,0 +1,19 @@
+.container
+  // TODO make sure this works on mobile
+  footer.d-flex.flex-wrap.justify-content-between.align-items-center.py-3.my-4.border-top
+    .col-3.align-items-center
+      // a.mb-3.me-2.mb-md-0.text-muted.text-decoration-none.lh-1(href='/')
+      //   svg.bi(width='30' height='24')
+      //     use(xlink:href='#bootstrap')
+      p.text-muted © 2022 Company, Inc
+    .col-6.align-items-center(style='text-align: center;')
+      p.text-muted.text-center= `Powered by ${poweredBy}`
+    ul.col-3.justify-content-end.d-flex
+      a(href='https://discord.gg/AchjKRWDjK')
+        i.bi.bi-discord(style='font-size: 2.5em;')
+            
+block append style
+  style.
+    .bi-discord {
+      color: #738adb;
+    }
