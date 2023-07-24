@@ -195,8 +195,8 @@ app.get('/show/:show', async (req, res) => {
 
         case 'donationlink':
           return 'cash-coin'
-
         case 'website': 
+          return 'house'
         case 'otherlink': 
           return 'globe'
       }
@@ -222,8 +222,8 @@ app.get('/show/:show', async (req, res) => {
     
       if (isSocial) {
         socialLinks.push({
-          socialName: formatSocialName(key),
-          socialType: [key],
+          name: formatSocialName(key),
+          type: [key],
           icon: socialIcons(key),
           iconColor: iconColor(key),
           link: showData[key]
