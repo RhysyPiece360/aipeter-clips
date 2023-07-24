@@ -1,14 +1,41 @@
 extends _layout.pug
 
 include _videocard
+
+block append style
+  style.
+    .socials i {
+      font-size: 3rem;
+    }
  
 block main
   // jumbotron (top text)
   section.jumbotron.text-center
     .container
       h1.jumbotron-heading= showPageData.fullname
-      // p.lead.text-muted
+      p.lead.text-muted= showPageData.description
       //   | owwww oooof my bones they really hurt 😢😢😢
+
+  .container
+    .row
+      //- show banner
+      .col-7
+        img.w-100(src='http://placekitten.com/1000/600')
+      //- socials for show
+      .col-5.socials
+        each social, key in socials
+          if (social)
+            // icons for stuff that doesn't have icons
+            - if (key == 'website') key = 'globe-americas'
+            - if (key == 'donationlink') key = 'cash-coin'
+            - if (key == 'otherlink') key = 'globe-americas'
+            // if (showPageData[linkType])
+            // p= social
+            // p= key
+            .row
+              .col-2
+                i.bi(class=`bi-${key}`)
+              .col-10= social
 
   .album.py-5
     .container

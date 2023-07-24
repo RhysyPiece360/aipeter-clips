@@ -106,8 +106,8 @@ const sqlDriver = {
   getShowName: shortname => ({
     text: `SELECT shortname, fullname, navname
     FROM shows
-    WHERE shortname = '$1'`,
-    values: [shortname]
+    WHERE shortname = $1`,
+    values: [shortname.toUpperCase()]
   }),
   // get the data for the show page including links
   getShowPageData: shortname => ({
@@ -137,16 +137,6 @@ const siteData = async () => {
   }
 }
 
-// TODO remove this and just use sql
-const fullShowName = shortname => {
-  switch (shortname.toUpperCase()) {
-    case 'PETER': return 'AI Peter'
-    case 'DBZ': return 'AI Dragon Ball'
-    case 'SPONGE': return 'AI Sponge'
-    case 'BRBA': return 'AI Breaking Bad'
-    default: return null
-  }
-}
 
 // homepage
 app.get('/', async (_req, res) => {
@@ -178,12 +168,28 @@ app.get('/show/:show', async (req, res) => {
     // get show info + links to stream, donation, etc.
     statement = sqlDriver.getShowPageData(req.params.show)
     const showPageData = await pool.query(statement.text, statement.values)
-
-    console.log(showPageData.rows)
-
+    
+    const showData = showPageData.rows[0]
+    
+    // grab socials out of showData and remove the keys from showData
+    const socials = {}
+    let isSocial = false;
+    for (x in showData) {
+      if (x == "discord") isSocial = true;
+      else if (x == "otherlinktype") isSocial = false;
+      
+      if (isSocial) {
+        socials[x] = showData[x]
+        delete showData[x]
+      }
+    }
+    
+    console.table(socials)
+    console.log(showData)
 
     res.render('showPage', {
       showPageData: showPageData.rows[0],
+      socials,
       posts: posts.rows,
       siteData: await siteData()
     })

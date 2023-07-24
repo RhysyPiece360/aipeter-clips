@@ -31,6 +31,7 @@ CREATE TABLE shows (
   fullname VARCHAR(32) NOT NULL,
   navname VARCHAR(16) NOT NULL,
   enabled BOOLEAN DEFAULT FALSE,
+  description VARCHAR(255),
   discord VARCHAR(255),
   website VARCHAR(255),
   youtube VARCHAR(255),
