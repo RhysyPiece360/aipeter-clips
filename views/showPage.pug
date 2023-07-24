@@ -11,20 +11,20 @@ block append style
 mixin socials
   each social in socialLinks
     if (social.link)
-      .row
-        .col-2
-          a(href=social.link style=`color: ${social.iconColor}`)
-            i.bi(class=`bi-${social.icon}`)
-        .col-10= social.name
+      .col-2
+        a(href=social.link style=`color: ${social.iconColor}`)
+          i.bi(class=`bi-${social.icon}`)
+      .col-4= social.name
 
 block main
   // jumbotron (top text)
-  section.jumbotron.text-center
+  //- section.jumbotron.text-center
     .container
       h1.jumbotron-heading= showData.fullname
       p.lead.text-muted= showData.description
       //   | owwww oooof my bones they really hurt 😢😢😢
 
+  // TODO add top margin
   .container
     .row
       //- show banner
@@ -32,7 +32,11 @@ block main
         img.w-100(src='http://placekitten.com/1000/600')
       //- socials for desktop
       .col-lg-5.d-none.d-lg-block.socials
-        +socials
+        .row
+          h1.jumbotron-heading= showData.fullname
+          p= showData.description
+        .row
+          +socials
     // socials for mobile
     // TODO style
     .row.d-lg-none.text-center
