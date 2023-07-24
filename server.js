@@ -143,10 +143,6 @@ app.get('/', async (_req, res) => {
   try {
     const sqlRes = await pool.query(sqlDriver.homepagePosts())
 
-    let aaa = await siteData()
-
-    console.log(aaa)
-
     res.render('index', {
       featuredPosts: sqlRes.rows,
       siteData: await siteData()
