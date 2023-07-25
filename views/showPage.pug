@@ -7,6 +7,9 @@ block append style
     .socials i {
       font-size: 2.5em;
     }
+    #showDescription {
+      font-size: 1.7em;
+    }
  
 mixin socials
   each social in socialLinks
@@ -33,9 +36,9 @@ block main
       //- socials for desktop
       .col-lg-5.d-none.d-lg-block.socials
         .row
-          h1.jumbotron-heading= showData.fullname
-          p= showData.description
-        .row
+          h1.display-4= showData.fullname
+          p#showDescription= showData.description
+        .row.socials.socials-desktop
           +socials
     // socials for mobile
     // TODO style
@@ -45,7 +48,8 @@ block main
           | Links
       #linksCollapse.collapse
         .card.card-body
-          +socials
+          .socials.socials-mobile
+            +socials
 
   .album.py-5
     .container
