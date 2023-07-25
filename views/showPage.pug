@@ -5,7 +5,7 @@ include _videocard
 block append style
   style.
     .socials i {
-      font-size: 3rem;
+      font-size: 2.5em;
     }
  
 mixin socials
@@ -49,9 +49,8 @@ block main
 
   .album.py-5
     .container
-      // .row
-      //   // h2 Recently Uploaded
-      //   h2 Recent Uploads
+      //- .row
+        h2 Recent Uploads
       .row
         each post in posts
           +videoCard(post)

@@ -23,9 +23,7 @@ html(lang='en')
     link(rel='stylesheet' href='https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css')
 
     block style
-    // TODO add style
-    // TODO compile sass
-    // link(href='/public/css/style.css' rel='stylesheet')
+    link(href='/public/css/style.css' rel='stylesheet')
 
     block scripts
       // scripts
@@ -43,6 +41,7 @@ html(lang='en')
     include _nav
 
     // main block
-    block main
+    #main.container
+      block main
 
     include _footer
