@@ -1,0 +1,22 @@
+nav.navbar.navbar-expand-sm.navbar-dark.bg-dark
+  .container-fluid
+    a.navbar-brand(href='/') AI Show Clips 
+    button.navbar-toggler(type='button' data-bs-toggle='collapse' data-bs-target='#navbarLinks' aria-controls='navbarLinks' aria-expanded='false' aria-label='Toggle navigation')
+      span.navbar-toggler-icon
+    #navbarLinks.collapse.navbar-collapse
+      // remove ms-auto to align left
+      ul.navbar-nav.ms-auto
+        //- list of shows
+        each show in siteData.showList
+          li.nav-item
+            a.nav-link(href=`/show/${show.shortname.toLowerCase()}`)= show.navname
+        li.nav-item
+          a.nav-link(href='/about') About
+        li.nav-item
+          a.nav-link(href='#') Login
+      // TODO make this an image that displays each show's logo
+      // .span.navbar-text.ms-auto hi
+
+      // TODO search form (impliment later)
+      // form.ms-auto
+      //   input.form-control(type='search' placeholder='Search' aria-label='Search')

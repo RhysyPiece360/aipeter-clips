@@ -1,0 +1,15 @@
+extends _layout.pug
+
+include _videocard
+ 
+block main
+  // jumbotron (top text)
+  section.jumbotron.text-center
+    .container
+      h1.jumbotron-heading= user.username
+      p.lead.text-muted= user.bio
+
+  .container
+    each val, index in user
+      li= index + ': ' + val
+    hr
